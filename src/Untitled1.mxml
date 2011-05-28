@@ -1,0 +1,102 @@
+<?xml version="1.0"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark"
+               xmlns:mx="library://ns.adobe.com/flex/mx">
+    <fx:Script><![CDATA[
+        import mx.core.BitmapAsset;
+        import flash.filters.*;
+
+        [Embed(source="1.jpg")]
+        [Bindable]
+        public var imgCls:Class;
+
+        public var varOne:String = "This is a public variable";
+        public var imgObj:BitmapAsset = new imgCls() as BitmapAsset;
+
+        private function initImage():void {
+            myImage.source=imgObj;
+        }
+
+        private function modImage():void {
+            // Modify the object.
+            //imgObj.bitmapData.noise(1);
+            var filter2:BlurFilter = new BlurFilter();
+            imgObj.bitmapData.applyFilter(imgObj.bitmapData, new Rectangle(0, 0, imgObj.width, imgObj.height), new Point(0,0), filter2);
+        }
+
+        private function setBrightness(v1:Number, v2:Number):void {
+            var cv:Number =1+(v1-128)/128;
+            var co:Number =(128 * (1 - cv));
+                cv+=(v2-128)/64;//brightness
+            var imgObjOrig:BitmapAsset = new imgCls() as BitmapAsset;
+
+            var matrix:Array = new Array();
+            matrix=matrix.concat([cv,0,0,0,co]);// red
+            matrix=matrix.concat([0,cv,0,0,co]);// green
+            matrix=matrix.concat([0,0,cv,0,co]);// blue
+            matrix=matrix.concat([0,0,0,1,0]);// alpha
+            var my_filter:ColorMatrixFilter=new ColorMatrixFilter(matrix);
+            imgObj.filters=[my_filter];
+
+//            imgObj.bitmapData.draw(imgObjOrig);
+        }
+
+
+    ]]></fx:Script>
+    <s:Button click="modImage();" label="Say Hello"/>
+        <s:Rect id="rct"
+            left="40" right="40" top="40" bottom="40">
+        <s:fill>
+            <s:SolidColor id="solidFill" />
+        </s:fill>
+    </s:Rect>
+
+    <mx:VBox>
+        <mx:Form width="300" height="200">
+            <mx:FormItem label="v1">
+                <s:HSlider id="bSl"
+                        minimum="0"
+                        maximum="255"
+                        value="128"
+                        showDataTip="true"
+                        change="setBrightness(bSl.value,cSl.value);" />
+            </mx:FormItem>
+            <mx:FormItem label="v2">
+                <s:HSlider id="cSl"
+                        minimum="0"
+                        maximum="255"
+                        value="128"
+                        showDataTip="true"
+                        change="setBrightness(bSl.value,cSl.value);" />
+            </mx:FormItem>
+        </mx:Form>
+
+        <mx:HBox>
+            <mx:Image id="myImageRaw" source="{imgCls}"/>
+            <mx:Image id="myImage" creationComplete="initImage();"/>
+        </mx:HBox>
+
+
+    <mx:Panel title="Rectangle MXML Graphics Example">
+
+    </mx:Panel>
+
+    </mx:VBox>
+
+    <fx:Style>
+        @namespace s "library://ns.adobe.com/flex/spark";
+        @namespace mx "library://ns.adobe.com/flex/mx";
+
+        #rSl s|Button#track {
+            chromeColor: red;
+        }
+
+        #gSl s|Button#track {
+            chromeColor: green;
+        }
+
+        #bSl s|Button#track {
+            chromeColor: blue;
+        }
+    </fx:Style>
+
+</s:Application>
