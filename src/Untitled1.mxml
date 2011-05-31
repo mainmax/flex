@@ -2,6 +2,7 @@
 <s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark"
                xmlns:mx="library://ns.adobe.com/flex/mx">
     <fx:Script><![CDATA[
+		import flash.display.Bitmap;
         import mx.core.BitmapAsset;
         import flash.filters.*;
         import flash.media.Camera;
@@ -15,8 +16,8 @@
 
 
         public var varOne:String = "This is a public variable";
-        public var imgObj:BitmapAsset = new  BitmapAsset() as BitmapAsset;
-//        public var imgObj:BitmapAsset = new imgCls() as BitmapAsset;
+//        public var imgObj:BitmapAsset = new Bitmap() as BitmapAsset;
+        public var imgObj:BitmapAsset = new imgCls() as BitmapAsset;
 
         private function initImage():void {
             myImage.source=imgObj;
