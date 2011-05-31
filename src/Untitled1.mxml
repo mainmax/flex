@@ -4,16 +4,22 @@
     <fx:Script><![CDATA[
         import mx.core.BitmapAsset;
         import flash.filters.*;
+        import flash.media.Camera;
+
 
         [Embed(source="1.jpg")]
         [Bindable]
         public var imgCls:Class;
+
+        var camera:Camera = Camera.getCamera();
+
 
         public var varOne:String = "This is a public variable";
         public var imgObj:BitmapAsset = new imgCls() as BitmapAsset;
 
         private function initImage():void {
             myImage.source=imgObj;
+            myVid.attachCamera(camera);
         }
 
         private function modImage():void {
@@ -45,7 +51,7 @@
     <s:Button click="modImage();" label="Say Hello"/>
 
     <mx:VBox>
-        <mx:Form width="300" height="200">
+        <mx:Form width="300" height="100">
             <mx:FormItem label="v1">
                 <s:HSlider id="bSl"
                         minimum="0"
@@ -65,9 +71,11 @@
         </mx:Form>
 
         <mx:HBox>
-            <mx:Image id="myImageRaw" source="{imgCls}"/>
-            <mx:Image id="myImage" creationComplete="initImage();"/>
+            <mx:Image id="myImageRaw" source="{imgCls}" height="158" width="211"/>
+            <mx:Image id="myImage" creationComplete="initImage();" height="158" width="211"/>
         </mx:HBox>
+        <mx:VideoDisplay id="myVid" height="158" width="211" source="" autoPlay="true"/>
+
     </mx:VBox>
 
     <fx:Style>
