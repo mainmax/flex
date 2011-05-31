@@ -15,7 +15,8 @@
 
 
         public var varOne:String = "This is a public variable";
-        public var imgObj:BitmapAsset = new imgCls() as BitmapAsset;
+        public var imgObj:BitmapAsset = new  BitmapAsset() as BitmapAsset;
+//        public var imgObj:BitmapAsset = new imgCls() as BitmapAsset;
 
         private function initImage():void {
             myImage.source=imgObj;
@@ -27,6 +28,10 @@
             //imgObj.bitmapData.noise(1);
             var filter2:BlurFilter = new BlurFilter();
             imgObj.bitmapData.applyFilter(imgObj.bitmapData, new Rectangle(0, 0, imgObj.width, imgObj.height), new Point(0,0), filter2);
+        }
+
+        private function takeShot():void {
+           imgObj.bitmapData.draw(myVid);
         }
 
         private function setBrightness(v1:Number, v2:Number):void {
@@ -49,6 +54,7 @@
 
     ]]></fx:Script>
     <s:Button click="modImage();" label="Say Hello"/>
+    <s:Button click="takeShot();" label="take shot"/>
 
     <mx:VBox>
         <mx:Form width="300" height="100">
