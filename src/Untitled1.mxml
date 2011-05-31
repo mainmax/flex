@@ -68,12 +68,6 @@
             <mx:Image id="myImageRaw" source="{imgCls}"/>
             <mx:Image id="myImage" creationComplete="initImage();"/>
         </mx:HBox>
-
-
-    <mx:Panel title="Rectangle MXML Graphics Example">
-
-    </mx:Panel>
-
     </mx:VBox>
 
     <fx:Style>
