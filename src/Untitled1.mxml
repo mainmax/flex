@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark"
-               xmlns:mx="library://ns.adobe.com/flex/mx">
+               xmlns:mx="library://ns.adobe.com/flex/mx"
+               applicationComplete="Init();">
     <fx:Script><![CDATA[
 		import flash.display.Bitmap;
         import mx.core.BitmapAsset;
@@ -12,17 +13,18 @@
         [Bindable]
         public var imgCls:Class;
 
-        var camera:Camera = Camera.getCamera();
+        private var camera:Camera = Camera.getCamera();
 
+        private function Init() {
+            camera.setMode(640 ,480, 5);
+            camera.setQuality(0, 100);
+            var myData:BitmapData = new BitmapData(camera.width, camera.height, true,0xff000000);
+            myVid.attachCamera(camera);
+            myImage.data=new Bitmap(myData);
+        }
 
-        public var varOne:String = "This is a public variable";
 //        public var imgObj:BitmapAsset = new Bitmap() as BitmapAsset;
         public var imgObj:BitmapAsset = new imgCls() as BitmapAsset;
-
-        private function initImage():void {
-            myImage.source=imgObj;
-            myVid.attachCamera(camera);
-        }
 
         private function modImage():void {
             // Modify the object.
@@ -32,14 +34,13 @@
         }
 
         private function takeShot():void {
-           imgObj.bitmapData.draw(myVid);
+           myImage.data.bitmapData.draw(myVid);
         }
 
         private function setBrightness(v1:Number, v2:Number):void {
             var cv:Number =1+(v1-128)/128;
             var co:Number =(128 * (1 - cv));
                 cv+=(v2-128)/64;//brightness
-            var imgObjOrig:BitmapAsset = new imgCls() as BitmapAsset;
 
             var matrix:Array = new Array();
             matrix=matrix.concat([cv,0,0,0,co]);// red
@@ -47,9 +48,8 @@
             matrix=matrix.concat([0,0,cv,0,co]);// blue
             matrix=matrix.concat([0,0,0,1,0]);// alpha
             var my_filter:ColorMatrixFilter=new ColorMatrixFilter(matrix);
-            imgObj.filters=[my_filter];
+            myImage.data.filters=[my_filter];
 
-//            imgObj.bitmapData.draw(imgObjOrig);
         }
 
 
@@ -78,10 +78,9 @@
         </mx:Form>
 
         <mx:HBox>
-            <mx:Image id="myImageRaw" source="{imgCls}" height="158" width="211"/>
-            <mx:Image id="myImage" creationComplete="initImage();" height="158" width="211"/>
+            <mx:VideoDisplay id="myVid" width="{camera.width}" height="{camera.height}"/>
+            <mx:Image id="myImage" width="{camera.width}" height="{camera.height}" />
         </mx:HBox>
-        <mx:VideoDisplay id="myVid" height="158" width="211" source="" autoPlay="true"/>
 
     </mx:VBox>
 
