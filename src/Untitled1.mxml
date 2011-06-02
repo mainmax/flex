@@ -14,10 +14,13 @@
         public var imgCls:Class;
 
         private var camera:Camera = Camera.getCamera();
-        private var W:int = 320;
-        private var H:int = 240;
+        //private var W:int = 2592; 
+		private var W:int = 800;
+        //private var H:int = 1944; 
+		private var H:int = 600;
 
         private function Init() {
+			//camera.setMode(2592,1944, 10);
             camera.setMode(W ,H, 15);
             camera.setQuality(0, 100);
             myVid.attachCamera(camera);
@@ -83,7 +86,12 @@
 
 
     ]]></fx:Script>
-    <s:Button click="takeShot();" label="take shot"/>
+    <mx:HBox>
+		<s:Button click="takeShot();" label="take shot"/>
+		<s:Button click="camera.setMode(2592,1944, 10);" label="2592x1944"/>
+		<s:Button click="camera.setMode(640,480, 10);" label="640x480"/>
+		<s:Button click="info.text=camera.width+' X ' +camera.height;" label="Get Res"/>
+	</mx:HBox>
 
     <mx:VBox>
         <mx:Form width="300" height="100">
@@ -104,10 +112,14 @@
                         change="setBrightness(bSl.value,cSl.value);" />
             </mx:FormItem>
         </mx:Form>
-        <mx:Label text="Actual Res: {camera.width} X {camera.height}" />
+        <mx:Label id="info" text="Actual Res: {camera.width} X {camera.height}" />
         <mx:HBox>
-            <mx:VideoDisplay id="myVid" width="{W}" height="{H}"/>
-            <mx:Image id="myImage"  width="{W}" height="{H}"/>
+			<mx:Box width="640" height="480">
+				<mx:VideoDisplay id="myVid" width="{W}" height="{H}"/>
+            </mx:Box>
+			<mx:Box width="640" height="480">
+				<mx:Image id="myImage"  width="{W}" height="{H}"/>
+			</mx:Box>
         </mx:HBox>
 
     </mx:VBox>
