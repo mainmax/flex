@@ -14,23 +14,16 @@
         public var imgCls:Class;
 
         private var camera:Camera = Camera.getCamera();
+        private var W:int = 320;
+        private var H:int = 240;
 
         private function Init() {
-            camera.setMode(640 ,480, 5);
+            camera.setMode(W ,H, 15);
             camera.setQuality(0, 100);
-            var myData:BitmapData = new BitmapData(camera.width, camera.height, true,0xff000000);
             myVid.attachCamera(camera);
+            var myData:BitmapData = new BitmapData(W, H, true,0xff000000);
             myImage.data=new Bitmap(myData);
-        }
-
-//        public var imgObj:BitmapAsset = new Bitmap() as BitmapAsset;
-        public var imgObj:BitmapAsset = new imgCls() as BitmapAsset;
-
-        private function modImage():void {
-            // Modify the object.
-            //imgObj.bitmapData.noise(1);
-            var filter2:BlurFilter = new BlurFilter();
-            imgObj.bitmapData.applyFilter(imgObj.bitmapData, new Rectangle(0, 0, imgObj.width, imgObj.height), new Point(0,0), filter2);
+            init2();
         }
 
         private function takeShot():void {
@@ -48,13 +41,48 @@
             matrix=matrix.concat([0,0,cv,0,co]);// blue
             matrix=matrix.concat([0,0,0,1,0]);// alpha
             var my_filter:ColorMatrixFilter=new ColorMatrixFilter(matrix);
-            myImage.data.filters=[my_filter];
+
+            // Variables that affect clamping:
+            var clamp:Boolean = false;
+            var clampColor:Number = 0xFF0000;
+            var clampAlpha:Number = 1;
+            // For illustration, keep other ConvolutionFilter variables neutral:
+            var bias:Number = 0;
+            var preserveAlpha:Boolean = false;
+            // Also, construct a neutral matrix
+            var matrixCols:Number = 3;
+            var matrixRows:Number = 3;
+            // Sharpness
+            var matrix2:Array = [-2, -2, -2,
+                           -2, 24, -2,
+                          -2, -2, -2];
+            // Outline
+//	            var matrix:Array = [-30, 30, 0,
+//                                -30, 30, 0,
+//                                -30, 30, 10];
+            var filter_conv:ConvolutionFilter = new ConvolutionFilter(matrixCols, matrixRows, matrix2, 8, bias, preserveAlpha, clamp, clampColor, clampAlpha);
+
+
+            myImage.data.filters=[my_filter, filter_conv];
 
         }
 
+        private var timer:Timer;
+
+             private function init2():void {
+                 timer = new Timer(100);
+                 timer.addEventListener(TimerEvent.TIMER, timer_timer);
+                 timer.start();
+             }
+
+             private function timer_timer(evt:TimerEvent):void {
+                takeShot();
+             }
+
+
+
 
     ]]></fx:Script>
-    <s:Button click="modImage();" label="Say Hello"/>
     <s:Button click="takeShot();" label="take shot"/>
 
     <mx:VBox>
@@ -76,10 +104,10 @@
                         change="setBrightness(bSl.value,cSl.value);" />
             </mx:FormItem>
         </mx:Form>
-
+        <mx:Label text="Actual Res: {camera.width} X {camera.height}" />
         <mx:HBox>
-            <mx:VideoDisplay id="myVid" width="{camera.width}" height="{camera.height}"/>
-            <mx:Image id="myImage" width="{camera.width}" height="{camera.height}" />
+            <mx:VideoDisplay id="myVid" width="{W}" height="{H}"/>
+            <mx:Image id="myImage"  width="{W}" height="{H}"/>
         </mx:HBox>
 
     </mx:VBox>
