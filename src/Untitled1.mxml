@@ -8,13 +8,17 @@
         import flash.filters.*;
         import flash.media.Camera;
 
+        import spark.components.ResizeMode;
+
 
         [Embed(source="1.jpg")]
         [Bindable]
         public var imgCls:Class;
 
         private var camera:Camera = Camera.getCamera();
-        //private var W:int = 2592; 
+        var video:Video;
+
+        //private var W:int = 2592;
 		private var W:int = 800;
         //private var H:int = 1944; 
 		private var H:int = 600;
@@ -23,14 +27,19 @@
 			//camera.setMode(2592,1944, 10);
             camera.setMode(W ,H, 15);
             camera.setQuality(0, 100);
-            myVid.attachCamera(camera);
+            W = camera.width;
+            H = camera.height;
+            video = new Video(W, H);
+            video.attachCamera(camera);
+            //myVid.attachCamera(camera);
             var myData:BitmapData = new BitmapData(W, H, true,0xff000000);
             myImage.data=new Bitmap(myData);
             init2();
         }
 
         private function takeShot():void {
-           myImage.data.bitmapData.draw(myVid);
+           //myImage.data.bitmapData.draw(myVid);
+           myImage.data.bitmapData.draw(video);
         }
 
         private function setBrightness(v1:Number, v2:Number):void {
@@ -114,12 +123,9 @@
         </mx:Form>
         <mx:Label id="info" text="Actual Res: {camera.width} X {camera.height}" />
         <mx:HBox>
-			<mx:Box width="640" height="480">
-				<mx:VideoDisplay id="myVid" width="{W}" height="{H}"/>
-            </mx:Box>
-			<mx:Box width="640" height="480">
+			<s:Group resizeMode="{ResizeMode.SCALE}" scaleX=".5" scaleY=".5">
 				<mx:Image id="myImage"  width="{W}" height="{H}"/>
-			</mx:Box>
+            </s:Group>
         </mx:HBox>
 
     </mx:VBox>
